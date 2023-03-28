@@ -1,32 +1,111 @@
-import React, { Fragment } from "react";
-import { Link } from "react-router-dom";
+import React, { useContext } from "react";
+import { NavLink } from "react-router-dom";
+import AuthContext from "../../context/Auth-context";
 import classes from "./Header.module.css";
 import HeaderCartButton from "./HeaderCartButton";
 
 const Header = (props) => {
+  const authCtx = useContext(AuthContext);
+  const isLogin = authCtx.isLoggedIn;
+
+  const logoutHandler = () => {
+    authCtx.logout();
+  };
+
   return (
-    <Fragment>
-      <header className={classes.header}>
-        <h1>The Generics</h1>
-        <nav>
+    <header className={classes.header}>
+      <h1>The Generics</h1>
+      <nav className={classes.nav}>
+        <nav className={classes.nav}>
           <ul className={classes.navlinks}>
+            {isLogin && (
+              <li>
+                <NavLink
+                  to="/profile"
+                  className={({ isActive }) =>
+                    isActive ? classes.active : undefined
+                  }
+                >
+                  Profile
+                </NavLink>
+              </li>
+            )}
             <li>
-              <Link to="/">Home</Link>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  isActive ? classes.active : undefined
+                }
+                end
+              >
+                Home
+              </NavLink>
             </li>
+            {/* {isLogin && ( */}
             <li>
-              <Link to="/store">Store</Link>
+              <NavLink
+                to="/products"
+                className={({ isActive }) =>
+                  isActive ? classes.active : undefined
+                }
+              >
+                Store
+              </NavLink>
             </li>
+            {/* )} */}
             <li>
-              <Link to="/about">About</Link>
+              <NavLink
+                to="/about"
+                className={({ isActive }) =>
+                  isActive ? classes.active : undefined
+                }
+              >
+                About
+              </NavLink>
             </li>
-            <li>
-              <Link to="/contact">Contact Us</Link>
-            </li>
+            {isLogin && (
+              <li>
+                <NavLink
+                  to="/contact"
+                  className={({ isActive }) =>
+                    isActive ? classes.active : undefined
+                  }
+                >
+                  Contact Us
+                </NavLink>
+              </li>
+            )}
+
+            {isLogin && (
+              <li>
+                <NavLink
+                  to="/signup"
+                  onClick={logoutHandler}
+                  className={({ isActive }) =>
+                    isActive ? classes.active : undefined
+                  }
+                >
+                  Logout
+                </NavLink>
+              </li>
+            )}
+            {!isLogin && (
+              <li>
+                <NavLink
+                  to="/login"
+                  className={({ isActive }) =>
+                    isActive ? classes.active : undefined
+                  }
+                >
+                  Login
+                </NavLink>
+              </li>
+            )}
           </ul>
         </nav>
-        <HeaderCartButton onClick={props.onShowCart} />
-      </header>
-    </Fragment>
+      </nav>
+      <HeaderCartButton onClick={props.onShowCart} />
+    </header>
   );
 };
 

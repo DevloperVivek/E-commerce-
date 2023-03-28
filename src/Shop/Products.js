@@ -1,3 +1,6 @@
+import { useState } from "react";
+import Cart from "../component/Cart/Cart";
+import Header from "../component/Layout/Header";
 import ProductItem from "./ProductItem";
 import classes from "./Products.module.css";
 
@@ -29,19 +32,35 @@ const productsArr = [
 ];
 
 const Products = () => {
+  const [cartIsShown, setCartIsShown] = useState(false);
+
+  const showCartHandler = () => {
+    setCartIsShown(true);
+  };
+
+  const hideCartHandler = () => {
+    setCartIsShown(false);
+  };
+
   const productsList = productsArr.map((product) => (
-    <ProductItem
-      id={product.id}
-      key={product.id}
-      title={product.title}
-      price={product.price}
-      imageUrl={product.imageUrl}
-    />
+    <div key={product.id}>
+      <ProductItem
+        id={product.id}
+        key={product.id}
+        title={product.title}
+        price={product.price}
+        quantity={product.quantity}
+        imageUrl={product.imageUrl}
+      />
+    </div>
   ));
 
   return (
     <div>
-      <h2 className={classes.title}>The Generics</h2>
+      {cartIsShown && <Cart onClose={hideCartHandler} />}
+      <Header onShowCart={showCartHandler} />
+      <h2 className={classes.generics}>The Generics</h2>
+      <h1 className={classes.title}>Products</h1>
       <ul className={classes.ualign}>{productsList}</ul>
     </div>
   );

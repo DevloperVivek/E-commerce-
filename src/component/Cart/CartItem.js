@@ -1,35 +1,27 @@
 import classes from "./CartItem.module.css";
 
 const CartItem = (props) => {
-  const addHandler = () => {
-    console.log("addhandler");
-  };
-
-  const removeHandler = () => {
-    console.log("removehandler");
-  };
-
-  const price = `$${props.price.toFixed(2)}`;
-
+  const price = props.price;
   return (
     <li className={classes["cart-item"]}>
       <div>
         <div>
-          <img className={classes.imgContainer} src={props.imageUrl} alt="productImages"></img>
+          <img
+            className={classes.imgContainer}
+            src={props.image}
+            alt="productImages"
+          ></img>
         </div>
         <div className={classes.summary}>
           <span className={classes.item}>{props.title}</span>
           <span className={classes.price}>{price}</span>
-          <span className={classes.amount}>x{props.amount}</span>
-          <div className={classes.quantity}>
-            <span>{props.amount}</span>
-          </div>
+          <span className={classes.amount}>x{props.quantity}</span>
         </div>
       </div>
       <div className={classes.details}>
         <div className={classes.actions}>
-          <button onClick={removeHandler}>-</button>
-          <button onClick={addHandler}>+</button>
+          <button onClick={props.onRemove}>-</button>
+          <button onClick={props.onAdd}>+</button>
         </div>
       </div>
     </li>

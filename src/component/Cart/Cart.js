@@ -1,65 +1,64 @@
+import { useContext, useEffect, useState } from "react";
+import CartContext from "../../context/cart-context";
 import Modal from "../UI/Modal";
 import classes from "./Cart.module.css";
 import CartItem from "./CartItem";
 
-const productsArr = [
-  {
-    id: "1",
-    title: "Colors",
-    price: 11.99,
-    amount: 2,
-    imageUrl: "https://prasadyash2411.github.io/ecom-website/img/Album%201.png",
-  },
-  {
-    id: "2",
-    title: "Black and white Colors",
-    price: 10.5,
-    amount: 1,
-    imageUrl: "https://prasadyash2411.github.io/ecom-website/img/Album%202.png",
-  },
-  {
-    id: "3",
-    title: "Yellow and Black Colors",
-    price: 5.5,
-    amount: 2,
-    imageUrl: "https://prasadyash2411.github.io/ecom-website/img/Album%203.png",
-  },
-  {
-    id: "4",
-    title: "Blue Color",
-    price: 10.0,
-    amount: 3,
-    imageUrl: "https://prasadyash2411.github.io/ecom-website/img/Album%204.png",
-  },
-];
-
-const cartItems = (
-  <ul className={classes["cart-items"]}>
-    {productsArr.map((product) => (
-      <CartItem
-        key={product.id}
-        title={product.title}
-        imageUrl={product.imageUrl}
-        price={product.price}
-        amount={product.amount}
-      />
-    ))}
-  </ul>
-);
-
 const Cart = (props) => {
+  const cartCtx = useContext(CartContext);
+  const userEmail = localStorage.getItem("userEmail");
+  const [cartItems, setCartItems] = useState([]);
+  const totalAmount = cartCtx.totalAmount;
+  const hasItems = cartCtx.items.length > 0;
+  const apiUrl = `https://crudcrud.com/api/adfb83c3d10248f9afe208f9e30e732e/${
+    userEmail.split("@")[0]
+  }`;
+
+  useEffect(() => {
+    setCartItems(cartCtx.items);
+  }, [cartCtx.items]);
+
+  const cartItemAddHandler = async (item) => {
+    cartCtx.addItem(item);
+    console.log("Item Is Added");
+  };
+
+  const cartItemReamoveHandler = (id) => {
+    console.log("cartItemRemoveHandler");
+    cartCtx.removeItem(id);
+    setCartItems((prevCartItems) =>
+      prevCartItems.filter((item) => item.id !== id)
+    );
+  };
+
   return (
     <Modal className={classes.cart} onClose={props.onClose}>
       <div>
-        {cartItems}
+        <ul className={classes["cart-items"]}>
+          {cartItems.map((item) => (
+            <CartItem
+              key={item.id}
+              title={item.title}
+              image={item.imageUrl}
+              price={item.price}
+              quantity={item.quantity}
+              onRemove={cartItemReamoveHandler.bind(null, item.id)}
+              onAdd={cartItemAddHandler.bind(null, item)}
+            />
+          ))}
+        </ul>
+      </div>
+      <div>
         <span className={classes.total}>Total Amount</span>
-        <span className={classes.total}>12.99</span>
+        <span className={classes.total}>{totalAmount}</span>
       </div>
       <div className={classes.actions}>
         <button className={classes["button--alt"]} onClick={props.onClose}>
           Close
         </button>
-        <button className={classes.button}>Order</button>
+        <div>
+          {hasItems && <button className={classes.button}>Order</button>}
+        </div>
       </div>
     </Modal>
   );
